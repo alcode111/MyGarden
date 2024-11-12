@@ -9,7 +9,23 @@ import SwiftUI
 
 struct MainTabView: View {
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        TabView {
+            Tab("Map", systemImage: "map") {
+                MapView()
+            }
+            
+            Tab("Flower List", systemImage: "list.bullet") {
+                PlantListView()
+            }
+            
+            Tab("Achievements", systemImage: "star") {
+                MyProgressView()
+            }
+        }
+        .onAppear {
+                    UITabBar.appearance().scrollEdgeAppearance =
+                    UITabBarAppearance()
+                }
     }
 }
 
