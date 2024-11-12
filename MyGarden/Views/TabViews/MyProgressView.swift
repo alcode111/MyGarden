@@ -9,7 +9,22 @@ import SwiftUI
 
 struct MyProgressView: View {
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        ZStack{
+            //Background Color
+            Color("BackgroundGreen")
+            //MARK: Score Bubble
+            ZStack{
+                Circle()
+                    .frame(width: 166)
+                    .foregroundColor(Color("MiddleGreen"))
+                VStack{
+                    Text("34")
+                        .font(.largeTitle)
+                        .fontWeight(.bold)
+                        .foregroundColor(.white)
+                }
+            }
+        }
     }
 }
 
