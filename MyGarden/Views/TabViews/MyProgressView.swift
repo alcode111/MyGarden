@@ -12,7 +12,7 @@ import SwiftUI
 
 struct MyProgressView: View {
     
-    @State var numberOfPlants: Int = 27
+    @State var numberOfPlants: Int = 7
     
     var body: some View {
         ZStack{
@@ -39,9 +39,23 @@ struct ProgressFlower: View {
     
     var flower: some View{
         ForEach(0..<plants) { index in
-            RotatedBadgeSymbol(
-                angle: .degrees(Double(index) / Double(plants)) * 360
-            )
+            //We alternate between "DarkGreen", "MiddleGreen" and "LightGreen" for each petal of the Progress Flower, we handle this in an if structure
+            if index % 2 == 0 {
+                RotatedBadgeSymbol(
+                    angle: .degrees(Double(index) / Double(plants)) * 360,
+                    colorRotatedBadgeSymbol: Color("DarkGreen")
+                )
+            } else if index % 3 == 0 {
+                RotatedBadgeSymbol(
+                    angle: .degrees(Double(index) / Double(plants)) * 360,
+                    colorRotatedBadgeSymbol: Color("MiddleGreen")
+                )
+            } else {
+                RotatedBadgeSymbol(
+                    angle: .degrees(Double(index) / Double(plants)) * 360,
+                    colorRotatedBadgeSymbol: Color("LightGreen")
+                )
+            }
         }
     }
     
