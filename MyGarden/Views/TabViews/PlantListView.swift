@@ -9,7 +9,30 @@ import SwiftUI
 
 struct PlantListView: View {
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        NavigationStack{
+            
+            ZStack {
+                Color.backgroundGreen
+                ScrollView{
+                    
+                    VStack{
+                        Spacer()
+                        PlantCard()
+                        PlantCard()
+                        PlantCard()
+                        PlantCard()
+                        PlantCard()
+                        PlantCard()
+                        PlantCard()
+                    }
+                }
+                .padding(.horizontal,10)
+                
+                .navigationTitle(Text("My Plants"))
+            }
+            
+        }
+      
     }
 }
 
