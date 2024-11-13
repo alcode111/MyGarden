@@ -6,10 +6,41 @@
 //
 
 import SwiftUI
+import PhotosUI
 
 struct NewEntryView: View {
+    @State private var notes: String = ""
+    @State private var avatarItem: PhotosPickerItem?
+    @State private var avatarImage: Image?
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        NavigationStack {
+            Form {
+                VStack {
+                    PhotosPicker("Select a picture", selection: $avatarItem, matching: .images)
+                    
+                    avatarImage?
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 300, height: 300)
+                }
+                .frame(maxWidth: .infinity, minHeight: 200, maxHeight: 200)
+
+                .onChange(of: avatarItem) {
+                    Task {
+                        if let loaded = try? await avatarItem?.loadTransferable(type: Image.self) {
+                            avatarImage = loaded
+                        } else {
+                            print("Failed")
+                        }
+                    }
+                }
+                
+                Section("Notes") {
+                    TextField("Add your notes", text: $notes)
+                }
+            }
+        }
     }
 }
 
