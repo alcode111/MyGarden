@@ -7,120 +7,117 @@
 
 import SwiftUI
 
-import SwiftUI
-import PhotosUI
-import CoreLocation
-
 struct NewPlantView: View {
-    @Environment(\.dismiss) private var dismiss
-    @StateObject private var locationManager = LocationManager()
-    @State private var flowerImage: UIImage?
-    @State private var title = ""
-    @State private var notes = ""
-    @State private var selectedEmoji = "🌸"
+    @Environment(\.dismiss) var dismiss
+    
+    @State private var capturedImage: UIImage?
+    @State private var captureDate: Date?
     @State private var showCamera = false
     
+    @State private var title: String = ""
+    @State private var notes: String = ""
+    
     let emojiOptions = ["🌸", "🌹", "🌺", "🌻", "🌼", "🌷", "💐", "🪷", "🍀"]
+    @State private var selectedEmoji = "🌸"
+    
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             Form {
-                Section {
-                    if let image = flowerImage {
-                        Image(uiImage: image)
-                            .resizable()
-                            .scaledToFit()
-                            .frame(height: 200)
-                    }
-                    
-                    HStack {
-                        Button(action: { showCamera = true }) {
-                            Label("Take Photo", systemImage: "camera")
+                Section("Take a picture") {
+                    Button {
+                        showCamera.toggle()
+                    } label: {
+                        if let image = capturedImage {
+                            Image(uiImage: image)
+                                .resizable()
+                                .scaledToFill()
+                                .frame(maxWidth: .infinity, minHeight: 200, maxHeight: 200)
+                        } else {
+                            HStack {
+                                Image(systemName: "camera.fill")
+                                    .foregroundStyle(.middleGreen)
+                                    .font(.largeTitle)
+                                
+                            }
+                            .frame(maxWidth: .infinity, minHeight: 200, maxHeight: 200)
+                            .foregroundStyle(.blue)
                         }
                     }
                 }
                 
-                Section(header: Text("Choose Icon")) {
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        HStack(spacing: 15) {
-                            ForEach(emojiOptions, id: \.self) { emoji in
-                                Button(action: {
-                                    selectedEmoji = emoji
-                                }) {
-                                    Text(emoji)
-                                        .font(.title)
-                                        .padding(10)
-                                        .background(
-                                            Circle()
-                                                .fill(selectedEmoji == emoji ? Color.blue.opacity(0.2) : Color.clear)
-                                        )
-                                }
-                            }
-                            
-                            Button(action: {
-                                // Open native emoji picker
-                                //                                selectedEmoji = showEmojiPicker()
-                            }) {
-                                Image(systemName: "plus")
-                                    .font(.title)
-                                    .padding(10)
-                                    .background(
-                                        Circle()
-                                            .fill(Color.blue.opacity(0.2))
-                                    )
-                            }
-                        }
-                        .padding(.vertical, 5)
-                    }
+                Section("Choose an icon") {
+                    emojiPicker
                 }
                 
-                Section {
-                    TextField("Title", text: $title)
-                    TextField("Notes", text: $notes, axis: .vertical)
-                        .lineLimit(4...6)
+                Section("Title") {
+                    TextField("Add a title", text: $title)
+                }
+                
+                Section("Notes") {
+                    TextField("Add notes", text: $notes)
                 }
             }
-            .navigationTitle("Add New Flower")
+            .navigationTitle("Add a new plant")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
+                ToolbarItem(placement: .topBarLeading) {
                     Button("Cancel") {
                         dismiss()
                     }
                 }
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Add") {
-                        //                        saveFlower()
-                        dismiss()
+                
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("Done") {
+                        // Function to add new plant
                     }
                 }
             }
-            
+            .fullScreenCover(isPresented: $showCamera) {
+                CameraView(capturedImage: $capturedImage,
+                           captureDate: $captureDate)
+            }
         }
-        .fullScreenCover(isPresented: $showCamera) {
-            //            CameraView(image: $flowerImage)
-        }
-    }
-    
-    private func saveFlower() {
-        // Convert image to Data for storage
-        let imageData = flowerImage?.jpegData(compressionQuality: 0.8)
-        
-        // Create new FlowerLocation
-        let plantLocation = PlantLocation(
-            coordinate: locationManager.location?.coordinate ?? CLLocationCoordinate2D(),
-            title: title,
-            emoji: selectedEmoji,
-            imageData: imageData,
-            notes: notes,
-            dataCreated: Date()
-        )
-        
-        // TODO: Save the flowerLocation to the database or file system
     }
 }
 
-
 #Preview {
     NewPlantView()
+}
+
+extension NewPlantView {
+    private var emojiPicker: some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 15) {
+                ForEach(emojiOptions, id: \.self) { emoji in
+                    Button(action: {
+                        selectedEmoji = emoji
+                    }) {
+                        Text(emoji)
+                            .font(.title)
+                            .padding(10)
+                            .background(
+                                Circle()
+                                    .stroke(selectedEmoji == emoji ?
+                                        .lightGreen : Color.clear, lineWidth: 4)
+                            )
+                    }
+                }
+                
+                Button {
+                    // Open all emojis
+                } label: {
+                    Image(systemName: "plus")
+                        .foregroundStyle(.darkGreen)
+                        .font(.title)
+                        .padding(7)
+                        .background(
+                            Circle()
+                                .stroke(.darkGreen, lineWidth: 4)
+                        )
+                }
+            }
+            .padding(5)
+        }
+    }
 }
