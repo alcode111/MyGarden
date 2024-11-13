@@ -7,23 +7,100 @@
 
 import SwiftUI
 
+//The number of plants planted by the user should be passed to this view as an Int
+
+
 struct MyProgressView: View {
+    
+    @State var numberOfPlants: Int = 27
+    
     var body: some View {
         ZStack{
             //Background Color
             Color("BackgroundGreen")
-            //MARK: Score Bubble
-            ZStack{
-                Circle()
-                    .frame(width: 166)
-                    .foregroundColor(Color("MiddleGreen"))
-                VStack{
-                    Text("34")
-                        .font(.largeTitle)
-                        .fontWeight(.bold)
-                        .foregroundColor(.white)
+            
+            VStack {
+                ProgressFlower(plants: numberOfPlants)
+                    .padding(.bottom, 10)
+                ScoreBubbleView(plants: numberOfPlants)
+                HStack{
+                    Spacer()
+                    ShareButton()
+                        .padding()
                 }
             }
+        }
+    }
+}
+
+struct ProgressFlower: View {
+    
+    var plants: Int = 1
+    
+    var flower: some View{
+        ForEach(0..<plants) { index in
+            RotatedBadgeSymbol(
+                angle: .degrees(Double(index) / Double(plants)) * 360
+            )
+        }
+    }
+    
+    var body: some View {
+        ZStack {
+            GeometryReader { geometry in
+                flower
+                    .scaleEffect(1.0 / 3.0, anchor: .top)
+                    .position(x: geometry.size.width / 2.0, y: (2.5 / 4.0) * geometry.size.height)
+            }
+        }
+        .frame(width: .infinity, height: 350)
+    }
+}
+
+
+struct ShareButton: View {
+    var body: some View {
+        ZStack{
+            Circle()
+                .frame(width: 50)
+                .foregroundColor(Color("MiddleGreen"))
+            Image(systemName: "square.and.arrow.up")
+                .resizable()
+                .foregroundStyle(.white)
+                .scaledToFit()
+                .frame(width: 32, height: 32)
+        }
+    }
+}
+
+struct ScoreBubbleView: View {
+    
+    var plants: Int = 0
+    
+    var body: some View {
+        //MARK: Score Bubble
+        ZStack{
+            Circle()
+                .frame(width: 166)
+                .foregroundColor(Color("MiddleGreen"))
+            VStack{
+                //Here will be displayed the total amount of plants planted by the user
+                Text("\(plants)")
+                    .font(.system(size: 80))
+                    .minimumScaleFactor(0.01)
+                    .frame(maxWidth: 150)
+                    .font(.largeTitle)
+                    .fontWeight(.bold)
+                    .foregroundColor(.white)
+                    .padding(.top, 10)
+                Text("plants")
+                    .font(.system(size: 40))
+                    .minimumScaleFactor(0.01)
+                    .frame(maxWidth: 166)
+                    .foregroundColor(.white)
+                    .padding(.top, -70)
+            }
+            .frame(width: 166, height: 166)
         }
     }
 }
