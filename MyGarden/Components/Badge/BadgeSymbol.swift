@@ -9,9 +9,9 @@
 import SwiftUI
 
 struct BadgeSymbol: View {
-    
-    //var symbolColor: View
-    static let symbolColor = Color("DarkGreen")
+
+    //var symbolColor = Color("DarkGreen")
+    var symbolColor: Color
     
     var body: some View {
         GeometryReader { geometry in
@@ -41,12 +41,12 @@ struct BadgeSymbol: View {
                     CGPoint(x: middle, y: topHeight / 2 + spacing * 3)
                 ])
             }
-            .fill(Self.symbolColor)
+            .fill(symbolColor)
         }
     }
 }
 
 #Preview {
-    BadgeSymbol()
+    BadgeSymbol(symbolColor: Color("DarkGreen"))
 }
 
