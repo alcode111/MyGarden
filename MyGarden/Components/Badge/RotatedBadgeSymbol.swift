@@ -4,9 +4,10 @@ import SwiftUI
 
 struct RotatedBadgeSymbol: View {
     let angle: Angle
+    var colorRotatedBadgeSymbol: Color
     
     var body: some View {
-        BadgeSymbol()
+        BadgeSymbol(symbolColor: colorRotatedBadgeSymbol)
             .padding(-60)
             .rotationEffect(angle, anchor: .bottom)
     }
@@ -14,5 +15,5 @@ struct RotatedBadgeSymbol: View {
 
 
 #Preview {
-    RotatedBadgeSymbol(angle: Angle(degrees: 5))
+    RotatedBadgeSymbol(angle: Angle(degrees: 5), colorRotatedBadgeSymbol: Color("DarkGreen"))
 }
