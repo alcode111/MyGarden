@@ -9,7 +9,6 @@ import SwiftUI
 
 //The number of plants planted by the user should be passed to this view as an Int
 
-
 struct MyProgressView: View {
     
     @State var numberOfPlants: Int = 4
@@ -35,7 +34,7 @@ struct MyProgressView: View {
 
 struct ProgressFlower: View {
     
-    var plants: Int = 1
+    var plants: Int
     
     var flower: some View{
         ForEach(0..<plants) { index in
