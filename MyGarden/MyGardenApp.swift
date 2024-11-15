@@ -7,11 +7,15 @@
 
 import SwiftUI
 
+
 @main
 struct MyGardenApp: App {
+    @State var vm = PlantViewModel()
+    
     var body: some Scene {
         WindowGroup {
-            DetailedPlantView()
+            MainTabView()
         }
+        .environment(vm)
     }
 }

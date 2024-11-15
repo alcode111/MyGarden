@@ -8,23 +8,15 @@
 import SwiftUI
 
 struct PlantListView: View {
+    @Environment(PlantViewModel.self) var vm
+    
     var body: some View {
         NavigationStack{
             
             ZStack {
                 Color.backgroundGreen
                 ScrollView{
-                    
-                    VStack{
-                        Spacer()
-                        PlantCard()
-                        PlantCard()
-                        PlantCard()
-                        PlantCard()
-                        PlantCard()
-                        PlantCard()
-                        PlantCard()
-                    }
+
                 }
                 .padding(.horizontal,10)
                 
@@ -38,4 +30,5 @@ struct PlantListView: View {
 
 #Preview {
     PlantListView()
+        .environment(PlantViewModel())
 }
