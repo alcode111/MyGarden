@@ -63,9 +63,6 @@ extension DetailedPlantView {
                     .font(.title2)
                     .bold()
             }
-            .background {
-                Color.red
-            }
         }
         .padding()
     }
