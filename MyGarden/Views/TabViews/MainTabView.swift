@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct MainTabView: View {
+    @Environment(PlantViewModel.self) var vm
+    
     var body: some View {
         TabView {
             Tab("Map", systemImage: "map") {
@@ -31,4 +33,5 @@ struct MainTabView: View {
 
 #Preview {
     MainTabView()
+        .environment(PlantViewModel())
 }
