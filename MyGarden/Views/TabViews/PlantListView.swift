@@ -16,7 +16,9 @@ struct PlantListView: View {
             ZStack {
                 Color.backgroundGreen
                 ScrollView{
-
+                    ForEach(vm.plants){ plant in
+                        PlantCard(plant: plant)
+                    }
                 }
                 .padding(.horizontal,10)
                 

@@ -15,7 +15,7 @@ class PlantViewModel {
         plants.append(plant)
     }
     
-    var mockPlants: [Plant] = [
+    static let mockPlants: [Plant] = [
         Plant(icon: "🌵", title: "Prickly Pear", latitude: 32.7157, longitude: -117.1611, entries: [
             Entry(picture: Data(), notes: "Healthy and thriving", date: Date(timeIntervalSinceNow: -86400 * 7))
         ]),

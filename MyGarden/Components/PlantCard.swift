@@ -47,6 +47,5 @@ struct PlantCard: View {
 }
 
 #Preview {
-    let mockData = PlantViewModel()
-    PlantCard(plant: mockData.mockPlants.first!)
+    PlantCard(plant: PlantViewModel.mockPlants.first!)
 }

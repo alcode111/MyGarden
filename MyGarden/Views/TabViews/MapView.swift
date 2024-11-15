@@ -9,12 +9,7 @@ import SwiftUI
 import MapKit
 
 struct MapView: View {
-    @State private var position: MapCameraPosition = .userLocation(fallback: .region(
-            MKCoordinateRegion(
-                center: CLLocationCoordinate2D(latitude: 40.83711526053254, longitude: 14.306408393642307), // Example center; replace with your desired fallback
-                span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01) // Adjust zoom level here
-            )
-        ))
+    @State private var position: MapCameraPosition = .userLocation(fallback: .automatic)
     
     @State private var isShowingNewPlantModal = false
     
