@@ -5,14 +5,49 @@
 //  Created by Ismail Larbi Pacha on 15/11/24.
 //
 
-import Foundation
+import SwiftUI
+import CoreLocation
 
 @Observable
 class PlantViewModel {
     var plants: [Plant] = []
     
-    func addPlant(_ plant: Plant) {
+    // Form state
+    var newPlantImage: UIImage?
+    var newPlantDate: Date?
+    var selectedEmoji = "🌸" 
+    var newPlantTitle: String = ""
+    var newPlantNotes: String = ""
+    
+    let emojiOptions = ["🌸", "🌹", "🌺", "🌻", "🌼", "🌷", "💐", "🪷", "🍀"]
+    
+    func createNewPlant(at location: CLLocation?) {
+        guard let location else { return }
+        
+        let entry = Entry(
+            picture: newPlantImage?.jpegData(compressionQuality: 0.8),
+            notes: newPlantNotes,
+            date: Date()
+        )
+        
+        let plant = Plant(
+            icon: selectedEmoji,
+            title: newPlantTitle,
+            latitude: location.coordinate.latitude,
+            longitude: location.coordinate.longitude,
+            entries: [entry]
+        )
+        
         plants.append(plant)
+        resetForm()
+    }
+    
+    private func resetForm() {
+        newPlantImage = nil
+        newPlantDate = nil
+        newPlantTitle = ""
+        newPlantNotes = ""
+        selectedEmoji = "🌸"
     }
     
     static let mockPlants: [Plant] = [

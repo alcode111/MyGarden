@@ -6,20 +6,14 @@
 //
 
 import SwiftUI
+import CoreLocation
 
 struct NewPlantView: View {
     @Environment(\.dismiss) var dismiss
     
-    @State private var capturedImage: UIImage?
-    @State private var captureDate: Date?
+    @Environment(PlantViewModel.self) var vm
+    let location: CLLocation?
     @State private var showCamera = false
-    
-    @State private var title: String = ""
-    @State private var notes: String = ""
-    
-    let emojiOptions = ["🌸", "🌹", "🌺", "🌻", "🌼", "🌷", "💐", "🪷", "🍀"]
-    @State private var selectedEmoji = "🌸"
-    
     
     var body: some View {
         NavigationStack {
@@ -28,7 +22,7 @@ struct NewPlantView: View {
                     Button {
                         showCamera.toggle()
                     } label: {
-                        if let image = capturedImage {
+                        if let image = vm.newPlantImage {
                             Image(uiImage: image)
                                 .resizable()
                                 .scaledToFill()
@@ -51,11 +45,11 @@ struct NewPlantView: View {
                 }
                 
                 Section("Title") {
-                    TextField("Add a title", text: $title)
+//                    TextField("Add a title", text: $vm.newPlantTitle)
                 }
                 
                 Section("Notes") {
-                    TextField("Add notes", text: $notes)
+//                    TextField("Add notes", text: $vm.newPlantNotes)
                 }
             }
             .navigationTitle("Add a new plant")
@@ -69,36 +63,49 @@ struct NewPlantView: View {
                 
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Done") {
-                        // Function to add new plant
+                        vm.createNewPlant(at: location)
+                        dismiss()
                     }
                 }
             }
             .fullScreenCover(isPresented: $showCamera) {
-                CameraView(capturedImage: $capturedImage,
-                           captureDate: $captureDate)
+                CameraView(
+                    capturedImage: Binding(
+                        get: { vm.newPlantImage },
+                        set: { vm.newPlantImage = $0 }
+                    ),
+                    captureDate: Binding(
+                        get: { vm.newPlantDate },
+                        set: { vm.newPlantDate = $0 }
+                    )
+                )
             }
         }
     }
 }
 
 #Preview {
-    NewPlantView()
+    NewPlantView(
+                 location: CLLocation(
+        latitude: 40.85249838151833,
+        longitude: 14.256114949101962))
+    .environment(PlantViewModel())
 }
 
 extension NewPlantView {
     private var emojiPicker: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 15) {
-                ForEach(emojiOptions, id: \.self) { emoji in
+                ForEach(vm.emojiOptions, id: \.self) { emoji in
                     Button(action: {
-                        selectedEmoji = emoji
+                        vm.selectedEmoji = emoji
                     }) {
                         Text(emoji)
                             .font(.title)
                             .padding(10)
                             .background(
                                 Circle()
-                                    .stroke(selectedEmoji == emoji ?
+                                    .stroke(vm.selectedEmoji == emoji ?
                                         .lightGreen : Color.clear, lineWidth: 4)
                             )
                     }

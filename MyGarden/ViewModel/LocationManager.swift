@@ -8,9 +8,10 @@
 import Foundation
 import CoreLocation
 
+@Observable
 class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     private let locationManager = CLLocationManager()
-    @Published var location: CLLocation?
+    var location: CLLocation?
     
     override init() {
         super.init()

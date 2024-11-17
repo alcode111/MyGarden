@@ -10,18 +10,24 @@ import MapKit
 
 struct MapView: View {
     @State private var position: MapCameraPosition = .userLocation(fallback: .automatic)
-    
     @State private var isShowingNewPlantModal = false
-    
     @State private var selectedEmoji = "🌸"
-
-
+    @Environment(PlantViewModel.self) var vm
+    @State private var locationManager = LocationManager()
+    
+    
     var body: some View {
         ZStack {
             Map(position: $position) {
-//                Annotation("Flower", coordinate: $position) {
-//                    MapAnnotationView()
-//                }
+                ForEach(vm.plants) { plant in
+                    Annotation(
+                        plant.title,
+                        coordinate: CLLocationCoordinate2D(
+                            latitude: plant.latitude,
+                            longitude: plant.longitude)) {
+                                MapAnnotationView(emoji: plant.icon)
+                            }
+                }
             }
             .mapControls {
                 MapUserLocationButton()
@@ -43,12 +49,19 @@ struct MapView: View {
             }
         }
         .sheet(isPresented: $isShowingNewPlantModal) {
-            NewPlantView()
+            if let currentLocation = locationManager.location {
+                NewPlantView(location: currentLocation)
+                    .environment(vm)
+            } else {
+                NewPlantView(location: nil)
+                    .environment(vm)
+            }
         }
     }
 }
 
 #Preview {
     MapView()
+        .environment(PlantViewModel())
 }
 
