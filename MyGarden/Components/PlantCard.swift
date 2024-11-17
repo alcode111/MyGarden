@@ -12,40 +12,42 @@ struct PlantCard: View {
     var entry: Entry?
     
     var body: some View {
-        ZStack(alignment: .leading){
-            RoundedRectangle(cornerRadius: 25)
-                .fill(.white)
-                .foregroundStyle(.white)
-                .frame(height: 130)
-            HStack{
-                Image(uiImage: UIImage(data: entry?.picture ?? Data()) ?? UIImage())
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
-                    .frame(width: 150, height: 110)
-                    .clipShape(RoundedRectangle(cornerRadius: 20))
-                    .border(.black, width: 1)
+        HStack{
+            Image(uiImage: UIImage(data: entry?.picture ?? Data()) ?? UIImage())
+                .resizable()
+                .aspectRatio(contentMode: .fill)
+                .frame(width: 150, height: 110)
+                .clipShape(RoundedRectangle(cornerRadius: 20))
+                .border(.black, width: 1)
+            
+            VStack(alignment: .leading){
+                Text(plant.title)
+                    .font(.title3)
+                    .fontWeight(.bold)
                 
-                VStack(alignment: .leading){
-                    Text(plant.title)
-                        .font(.title3)
-                        .fontWeight(.bold)
-                    
-                    if let date = entry?.date {
-                        Text("\(date)")
-                            .font(.caption)
-                            .foregroundStyle(.gray)
-                    } else {
-                        Text("No entry date")
-                            .font(.caption)
-                            .foregroundStyle(.gray)
-                    }
+                if let date = entry?.date {
+                    Text("\(date)")
+                        .font(.caption)
+                        .foregroundStyle(.gray)
+                } else {
+                    Text("No entry date")
+                        .font(.caption)
+                        .foregroundStyle(.gray)
                 }
             }
-            .padding(10)
         }
+        .padding()
+        .background(
+            RoundedRectangle(cornerRadius: 25)
+                .fill(.white.opacity(0.7))
+        )
     }
 }
 
 #Preview {
-    PlantCard(plant: PlantViewModel.mockPlants.first!)
+    ZStack {
+        Color.green.opacity(0.3).ignoresSafeArea()
+        
+        PlantCard(plant: PlantViewModel.mockPlants.first!)
+    }
 }

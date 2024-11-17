@@ -10,11 +10,13 @@ import MapKit
 
 struct MapView: View {
     @State private var position: MapCameraPosition = .userLocation(fallback: .automatic)
-    @State private var isShowingNewPlantModal = false
+    @State private var isShowingNewPlantViewModal = false
     @State private var selectedEmoji = "🌸"
     @Environment(PlantViewModel.self) var vm
     @State private var locationManager = LocationManager()
     
+    @State private var selectedPlant: Plant?
+    @State private var isShowingDetailedPlantView = false
     
     var body: some View {
         ZStack {
@@ -26,6 +28,11 @@ struct MapView: View {
                             latitude: plant.latitude,
                             longitude: plant.longitude)) {
                                 MapAnnotationView(emoji: plant.icon)
+                                    .onTapGesture {
+                                        withAnimation(.spring()) {
+                                            selectedPlant = plant
+                                        }
+                                    }
                             }
                 }
             }
@@ -36,7 +43,7 @@ struct MapView: View {
             }
             .overlay(alignment: .bottomTrailing) {
                 Button {
-                    isShowingNewPlantModal.toggle()
+                    isShowingNewPlantViewModal.toggle()
                 } label: {
                     Image(systemName: "leaf.fill")
                         .font(.title2)
@@ -47,8 +54,19 @@ struct MapView: View {
                         .padding()
                 }
             }
+            
+            if let plant = selectedPlant {
+                PlantCard(plant: plant, entry: plant.entries.last)
+                    .padding()
+                    .transition(.move(edge: .bottom))
+                    .onTapGesture {
+                        isShowingDetailedPlantView = true
+                    }
+                    .zIndex(1)
+            }
+                
         }
-        .sheet(isPresented: $isShowingNewPlantModal) {
+        .sheet(isPresented: $isShowingNewPlantViewModal) {
             if let currentLocation = locationManager.location {
                 NewPlantView(location: currentLocation)
                     .environment(vm)
