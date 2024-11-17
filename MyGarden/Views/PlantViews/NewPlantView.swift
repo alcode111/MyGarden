@@ -31,7 +31,8 @@ struct NewPlantView: View {
                 }
                 
                 Section("Notes") {
-                    TextField("Add notes", text: vm.newPlantNotesBinding)
+                    TextField("Add notes", text: vm.newPlantNotesBinding, axis: .vertical)
+                        .lineLimit(5...10)
                 }
             }
             .navigationTitle("Add a new plant")
