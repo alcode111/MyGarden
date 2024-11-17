@@ -60,7 +60,7 @@ extension DetailedPlantView {
     private var addNewEntry: some View {
         HStack {
             Text("Entries")
-                .font(.title2)
+                .font(.body)
                 .bold()
             
             Spacer()
