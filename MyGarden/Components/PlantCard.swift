@@ -18,17 +18,18 @@ struct PlantCard: View {
                 .aspectRatio(contentMode: .fill)
                 .frame(width: 150, height: 110)
                 .clipShape(RoundedRectangle(cornerRadius: 20))
-                .border(.black, width: 1)
             
             VStack(alignment: .leading){
-                Text(plant.title)
+                Text("\(plant.icon) \(plant.title)")
                     .font(.title3)
+                    .foregroundStyle(.black)
                     .fontWeight(.bold)
                 
                 if let date = entry?.date {
-                    Text("\(date)")
+                    Text(FormatDatesAndTime.formattedDateWithTime(date))
                         .font(.caption)
                         .foregroundStyle(.gray)
+                        .italic()
                 } else {
                     Text("No entry date")
                         .font(.caption)
@@ -39,7 +40,7 @@ struct PlantCard: View {
         .padding()
         .background(
             RoundedRectangle(cornerRadius: 25)
-                .fill(.white.opacity(0.7))
+                .fill(.white)
         )
     }
 }
@@ -48,6 +49,9 @@ struct PlantCard: View {
     ZStack {
         Color.green.opacity(0.3).ignoresSafeArea()
         
-        PlantCard(plant: PlantViewModel.mockPlants.first!)
+        if let firstEntry = PlantViewModel.mockPlants.first?.entries.first {
+            PlantCard(plant: PlantViewModel.mockPlants.first!, entry: firstEntry)
+        }   
     }
 }
+
