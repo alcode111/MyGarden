@@ -21,6 +21,8 @@ struct DetailedPlantView: View {
             flowerImage
             
             notes
+            
+            Spacer()
         }
         .fullScreenCover(isPresented: $showNewEntryView) {
             NewEntryView()

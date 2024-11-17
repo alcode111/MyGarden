@@ -74,3 +74,34 @@ class PlantViewModel {
         ])
     ]
 }
+
+extension PlantViewModel {
+    var newPlantTitleBinding: Binding<String> {
+        Binding(
+            get: { self.newPlantTitle },
+            set: { self.newPlantTitle = $0 }
+        )
+    }
+    
+    var newPlantNotesBinding: Binding<String> {
+        Binding(
+            get: { self.newPlantNotes },
+            set: { self.newPlantNotes = $0 }
+        )
+    }
+    
+    var newPlantImageBinding: Binding<UIImage?> {
+        Binding(
+            get: { self.newPlantImage },
+            set: { self.newPlantImage = $0 }
+        )
+    }
+    
+    var newPlantDateBinding: Binding<Date?> {
+        Binding(
+            get: { self.newPlantDate },
+            set: { self.newPlantDate = $0 }
+        )
+    }
+}
+
