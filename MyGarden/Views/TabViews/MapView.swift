@@ -56,13 +56,16 @@ struct MapView: View {
             }
             
             if let plant = selectedPlant {
-                PlantCard(plant: plant, entry: plant.entries.last)
-                    .padding()
-                    .transition(.move(edge: .bottom))
-                    .onTapGesture {
-                        isShowingDetailedPlantView = true
-                    }
-                    .zIndex(1)
+                VStack {
+                    Spacer()
+                    
+                    PlantCard(plant: plant, entry: plant.entries.last)
+                        .transition(.move(edge: .bottom))
+                        .onTapGesture {
+                            isShowingDetailedPlantView = true
+                        }
+                }
+                .padding()
             }
                 
         }
@@ -75,6 +78,11 @@ struct MapView: View {
                     .environment(vm)
             }
         }
+        .sheet(isPresented: $isShowingDetailedPlantView) {
+                    if let plant = selectedPlant {
+                        DetailedPlantView(plant: plant, entry: plant.entries.last)
+                    }
+                }
     }
 }
 
