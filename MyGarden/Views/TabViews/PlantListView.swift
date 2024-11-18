@@ -17,7 +17,7 @@ struct PlantListView: View {
                 Color.backgroundGreen
                 ScrollView{
                     ForEach(vm.plants){ plant in
-                        PlantCard(plant: plant)
+                        PlantCard(plant: plant, entry: plant.entries.last)
                     }
                 }
                 .padding(.horizontal,10)

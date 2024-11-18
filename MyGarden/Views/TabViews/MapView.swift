@@ -10,18 +10,31 @@ import MapKit
 
 struct MapView: View {
     @State private var position: MapCameraPosition = .userLocation(fallback: .automatic)
-    
-    @State private var isShowingNewPlantModal = false
-    
+    @State private var isShowingNewPlantViewModal = false
     @State private var selectedEmoji = "🌸"
-
-
+    @Environment(PlantViewModel.self) var vm
+    @State private var locationManager = LocationManager()
+    
+    @State private var selectedPlant: Plant?
+    @State private var isShowingDetailedPlantView = false
+    
     var body: some View {
         ZStack {
             Map(position: $position) {
-//                Annotation("Flower", coordinate: $position) {
-//                    MapAnnotationView()
-//                }
+                ForEach(vm.plants) { plant in
+                    Annotation(
+                        plant.title,
+                        coordinate: CLLocationCoordinate2D(
+                            latitude: plant.latitude,
+                            longitude: plant.longitude)) {
+                                MapAnnotationView(emoji: plant.icon)
+                                    .onTapGesture {
+                                        withAnimation(.spring()) {
+                                            selectedPlant = plant
+                                        }
+                                    }
+                            }
+                }
             }
             .mapControls {
                 MapUserLocationButton()
@@ -30,7 +43,7 @@ struct MapView: View {
             }
             .overlay(alignment: .bottomTrailing) {
                 Button {
-                    isShowingNewPlantModal.toggle()
+                    isShowingNewPlantViewModal.toggle()
                 } label: {
                     Image(systemName: "leaf.fill")
                         .font(.title2)
@@ -41,14 +54,48 @@ struct MapView: View {
                         .padding()
                 }
             }
+            
+            if let plant = selectedPlant {
+                Color.clear
+                    .contentShape(Rectangle())
+                    .onTapGesture {
+                        withAnimation(.spring()) {
+                            selectedPlant = nil
+                        }
+                    }
+                
+                VStack {
+                    Spacer()
+                    
+                    PlantCard(plant: plant, entry: plant.entries.last)
+                        .transition(.move(edge: .bottom))
+                        .onTapGesture {
+                            isShowingDetailedPlantView = true
+                        }
+                }
+                .padding()
+            }
+            
         }
-        .sheet(isPresented: $isShowingNewPlantModal) {
-            NewPlantView()
+        .sheet(isPresented: $isShowingNewPlantViewModal) {
+            if let currentLocation = locationManager.location {
+                NewPlantView(location: currentLocation)
+                    .environment(vm)
+            } else {
+                NewPlantView(location: nil)
+                    .environment(vm)
+            }
+        }
+        .sheet(isPresented: $isShowingDetailedPlantView) {
+            if let plant = selectedPlant {
+                DetailedPlantView(plant: plant, entry: plant.entries.last)
+            }
         }
     }
 }
 
 #Preview {
     MapView()
+        .environment(PlantViewModel())
 }
 

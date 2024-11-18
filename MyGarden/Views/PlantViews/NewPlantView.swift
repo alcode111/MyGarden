@@ -6,44 +6,20 @@
 //
 
 import SwiftUI
+import CoreLocation
 
 struct NewPlantView: View {
     @Environment(\.dismiss) var dismiss
     
-    @State private var capturedImage: UIImage?
-    @State private var captureDate: Date?
+    @Environment(PlantViewModel.self) var vm
+    let location: CLLocation?
     @State private var showCamera = false
-    
-    @State private var title: String = ""
-    @State private var notes: String = ""
-    
-    let emojiOptions = ["🌸", "🌹", "🌺", "🌻", "🌼", "🌷", "💐", "🪷", "🍀"]
-    @State private var selectedEmoji = "🌸"
-    
     
     var body: some View {
         NavigationStack {
             Form {
                 Section("Take a picture") {
-                    Button {
-                        showCamera.toggle()
-                    } label: {
-                        if let image = capturedImage {
-                            Image(uiImage: image)
-                                .resizable()
-                                .scaledToFill()
-                                .frame(maxWidth: .infinity, minHeight: 200, maxHeight: 200)
-                        } else {
-                            HStack {
-                                Image(systemName: "camera.fill")
-                                    .foregroundStyle(.middleGreen)
-                                    .font(.largeTitle)
-                                
-                            }
-                            .frame(maxWidth: .infinity, minHeight: 200, maxHeight: 200)
-                            .foregroundStyle(.blue)
-                        }
-                    }
+                    cameraButton
                 }
                 
                 Section("Choose an icon") {
@@ -51,11 +27,12 @@ struct NewPlantView: View {
                 }
                 
                 Section("Title") {
-                    TextField("Add a title", text: $title)
+                    TextField("Add a title", text: vm.newPlantTitleBinding)
                 }
                 
                 Section("Notes") {
-                    TextField("Add notes", text: $notes)
+                    TextField("Add notes", text: vm.newPlantNotesBinding, axis: .vertical)
+                        .lineLimit(5...10)
                 }
             }
             .navigationTitle("Add a new plant")
@@ -69,37 +46,66 @@ struct NewPlantView: View {
                 
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Done") {
-                        // Function to add new plant
+                        vm.createNewPlant(at: location)
+                        dismiss()
                     }
                 }
             }
             .fullScreenCover(isPresented: $showCamera) {
-                CameraView(capturedImage: $capturedImage,
-                           captureDate: $captureDate)
+                CameraView(
+                    capturedImage: vm.newPlantImageBinding,
+                    captureDate: vm.newPlantDateBinding
+                )
             }
         }
     }
 }
 
 #Preview {
-    NewPlantView()
+    NewPlantView(
+                 location: CLLocation(
+        latitude: 40.85249838151833,
+        longitude: 14.256114949101962))
+    .environment(PlantViewModel())
 }
 
 extension NewPlantView {
+    private var cameraButton: some View {
+        Button {
+            showCamera.toggle()
+        } label: {
+            if let image = vm.newPlantImage {
+                Image(uiImage: image)
+                    .resizable()
+                    .scaledToFill()
+                    .frame(maxWidth: .infinity, minHeight: 200, maxHeight: 200)
+            } else {
+                HStack {
+                    Image(systemName: "camera.fill")
+                        .foregroundStyle(.middleGreen)
+                        .font(.largeTitle)
+                    
+                }
+                .frame(maxWidth: .infinity, minHeight: 200, maxHeight: 200)
+                .foregroundStyle(.blue)
+            }
+        }
+    }
+    
     private var emojiPicker: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 15) {
-                ForEach(emojiOptions, id: \.self) { emoji in
-                    Button(action: {
-                        selectedEmoji = emoji
-                    }) {
+                ForEach(vm.emojiOptions, id: \.self) { emoji in
+                    Button {
+                        vm.selectedEmoji = emoji
+                    } label: {
                         Text(emoji)
                             .font(.title)
                             .padding(10)
                             .background(
                                 Circle()
-                                    .stroke(selectedEmoji == emoji ?
-                                        .lightGreen : Color.clear, lineWidth: 4)
+                                    .stroke(vm.selectedEmoji == emoji ?
+                                        .middleGreen : Color.clear, lineWidth: 4)
                             )
                     }
                 }

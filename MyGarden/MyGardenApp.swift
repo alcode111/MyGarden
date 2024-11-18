@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-
 @main
 struct MyGardenApp: App {
     @State var vm = PlantViewModel()
