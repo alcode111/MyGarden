@@ -56,6 +56,14 @@ struct MapView: View {
             }
             
             if let plant = selectedPlant {
+                Color.clear
+                    .contentShape(Rectangle())
+                    .onTapGesture {
+                        withAnimation(.spring()) {
+                            selectedPlant = nil
+                        }
+                    }
+                
                 VStack {
                     Spacer()
                     
@@ -67,7 +75,7 @@ struct MapView: View {
                 }
                 .padding()
             }
-                
+            
         }
         .sheet(isPresented: $isShowingNewPlantViewModal) {
             if let currentLocation = locationManager.location {
@@ -79,10 +87,10 @@ struct MapView: View {
             }
         }
         .sheet(isPresented: $isShowingDetailedPlantView) {
-                    if let plant = selectedPlant {
-                        DetailedPlantView(plant: plant, entry: plant.entries.last)
-                    }
-                }
+            if let plant = selectedPlant {
+                DetailedPlantView(plant: plant, entry: plant.entries.last)
+            }
+        }
     }
 }
 
