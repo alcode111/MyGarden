@@ -12,10 +12,15 @@ struct CongratulateView: View {
     var body: some View {
         VStack{
             Text("You did it!")
-                .padding()
+                .fontWeight(.bold)
+                .font(.system(size: 60))
+                .padding(.bottom, -30)
             ProgressFlower(plants: 10)
             
             Text("Keep going to watch it grow!")
+                .fontWeight(.bold)
+                .font(.system(size: 30))
+                .frame(maxWidth: 300)
                 .padding(.bottom)
         }
         .background {
