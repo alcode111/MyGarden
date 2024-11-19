@@ -16,11 +16,11 @@ struct MainTabView: View {
                 MapView()
             }
             
-            Tab("Flower List", systemImage: "list.bullet") {
+            Tab("Plant List", systemImage: "list.bullet") {
                 PlantListView()
             }
             
-            Tab("Achievements", systemImage: "star") {
+            Tab("My Progress", systemImage: "chart.xyaxis.line") {
                 MyProgressView()
             }
         }
