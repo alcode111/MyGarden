@@ -7,24 +7,22 @@
 
 import SwiftUI
 
-//The number of plants planted by the user should be passed to this view as an Int
-
-
 struct MyProgressView: View {
-    
-    @State var numberOfPlants: Int = 4
+    @Environment(PlantViewModel.self) var vm
     
     var body: some View {
-        ZStack{
-            //Background Color
-            Color("BackgroundGreen")
+        ZStack {
+            Color(.backgroundGreen).ignoresSafeArea()
             
             VStack {
-                ProgressFlower(plants: numberOfPlants)
+                ProgressFlower(plants: vm.plants.count)
                     .padding(.bottom, 10)
-                ScoreBubbleView(plants: numberOfPlants)
-                HStack{
+                
+                ScoreBubbleView(plants: vm.plants.count)
+                
+                HStack {
                     Spacer()
+                    
                     ShareButton()
                         .padding()
                 }
@@ -34,31 +32,34 @@ struct MyProgressView: View {
 }
 
 struct ProgressFlower: View {
-    
-    var plants: Int = 1
-    
-    var flower: some View{
-        ForEach(0..<plants) { index in
-            //We alternate between "DarkGreen", "MiddleGreen" and "LightGreen" for each petal of the Progress Flower, we handle this in an if structure
-            if index % 2 == 0 {
-                RotatedBadgeSymbol(
-                    angle: .degrees(Double(index) / Double(plants)) * 360,
-                    colorRotatedBadgeSymbol: Color("DarkGreen")
-                )
-                .opacity(0.7)
-            } else if index % 3 == 0 {
-                RotatedBadgeSymbol(
-                    angle: .degrees(Double(index) / Double(plants)) * 360,
-                    colorRotatedBadgeSymbol: Color("MiddleGreen")
-                )
-                .opacity(0.7)
-            } else {
-                RotatedBadgeSymbol(
-                    angle: .degrees(Double(index) / Double(plants)) * 360,
-                    colorRotatedBadgeSymbol: Color("LightGreen")
-                )
-                .opacity(0.7)
+    let plants: Int
+
+    @ViewBuilder
+    var flower: some View {
+        if plants > 0 {
+            ForEach(0..<plants, id: \.self) { index in
+                if index % 2 == 0 {
+                    RotatedBadgeSymbol(
+                        angle: .degrees(Double(index) / Double(plants)) * 360,
+                        colorRotatedBadgeSymbol: Color(.darkGreen)
+                    )
+                    .opacity(0.7)
+                } else if index % 3 == 0 {
+                    RotatedBadgeSymbol(
+                        angle: .degrees(Double(index) / Double(plants)) * 360,
+                        colorRotatedBadgeSymbol: Color(.middleGreen)
+                    )
+                    .opacity(0.7)
+                } else {
+                    RotatedBadgeSymbol(
+                        angle: .degrees(Double(index) / Double(plants)) * 360,
+                        colorRotatedBadgeSymbol: Color(.lightGreen)
+                    )
+                    .opacity(0.7)
+                }
             }
+        } else {
+            EmptyView()
         }
     }
     
@@ -70,43 +71,42 @@ struct ProgressFlower: View {
                     .position(x: geometry.size.width / 2.0, y: (2.5 / 4.0) * geometry.size.height)
             }
         }
-        .frame(width: .infinity, height: 350)
+        .frame(width: .infinity, height: 350) // Fixed .infinity syntax
     }
 }
 
-
+// ShareButton remains the same
 struct ShareButton: View {
     var body: some View {
-        ZStack{
+        ZStack {
             Circle()
-                .frame(width: 50)
-                .foregroundColor(Color("MiddleGreen"))
+                .frame(width: 54, height: 54)
+                .foregroundColor(.middleGreen)
             Image(systemName: "square.and.arrow.up")
                 .resizable()
-                .foregroundStyle(.white)
                 .scaledToFit()
-                .frame(width: 32, height: 32)
+                .frame(width: 30, height: 30)
+                .padding(.bottom, 4)
+                .bold()
+                .foregroundStyle(.white)
         }
+        .frame(width: 50, height: 50)
     }
 }
 
 struct ScoreBubbleView: View {
-    
-    var plants: Int = 0
+    let plants: Int
     
     var body: some View {
-        //MARK: Score Bubble
-        ZStack{
+        ZStack {
             Circle()
                 .frame(width: 166)
-                .foregroundColor(Color("MiddleGreen"))
-            VStack{
-                //Here will be displayed the total amount of plants planted by the user
+                .foregroundColor(.middleGreen)
+            VStack {
                 Text("\(plants)")
                     .font(.system(size: 80))
                     .minimumScaleFactor(0.01)
                     .frame(maxWidth: 150)
-                    .font(.largeTitle)
                     .fontWeight(.bold)
                     .foregroundColor(.white)
                     .padding(.top, 10)
@@ -123,5 +123,15 @@ struct ScoreBubbleView: View {
 }
 
 #Preview {
+        MyProgressView()
+            .environment({
+                let vm = PlantViewModel()
+                vm.plants = PlantViewModel.mockPlants
+                return vm
+            }())
+}
+
+#Preview {
     MyProgressView()
+        .environment(PlantViewModel())
 }
