@@ -16,7 +16,7 @@ struct MainTabView: View {
                 MapView()
             }
             
-            Tab("Flower List", systemImage: "list.bullet") {
+            Tab("Plant List", systemImage: "list.bullet") {
                 PlantListView()
             }
             
