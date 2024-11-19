@@ -33,7 +33,7 @@ struct MyProgressView: View {
 
 struct ProgressFlower: View {
     let plants: Int
-
+    
     @ViewBuilder
     var flower: some View {
         if plants > 0 {
@@ -71,17 +71,21 @@ struct ProgressFlower: View {
                     .position(x: geometry.size.width / 2.0, y: (2.5 / 4.0) * geometry.size.height)
             }
         }
-        .frame(width: .infinity, height: 350) // Fixed .infinity syntax
+        .frame(height: 350)
     }
 }
 
-// ShareButton remains the same
 struct ShareButton: View {
+    @State private var image: UIImage?
+    @State private var isSharePresented = false
+    @Environment(PlantViewModel.self) var vm
+    
     var body: some View {
         ZStack {
             Circle()
                 .frame(width: 54, height: 54)
                 .foregroundColor(.middleGreen)
+            
             Image(systemName: "square.and.arrow.up")
                 .resizable()
                 .scaledToFit()
@@ -91,6 +95,31 @@ struct ShareButton: View {
                 .foregroundStyle(.white)
         }
         .frame(width: 50, height: 50)
+        .onTapGesture {
+            let renderer =
+            ImageRenderer(content: MyProgressView()
+                .environment(vm)
+                .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
+                .background(Color(.backgroundGreen))
+            )
+            renderer.scale = UIScreen.main.scale
+            image = renderer.uiImage
+            isSharePresented = true
+        }
+        .sheet(isPresented: $isSharePresented) {
+            if let imageToShare = image {
+                VStack {
+                    Image(uiImage: imageToShare)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                    ShareLink(
+                        item: Image(uiImage: imageToShare),
+                        preview: SharePreview("My Garden Progress", image: Image(uiImage: imageToShare))
+                    )
+                    .padding()
+                }
+            }
+        }
     }
 }
 
@@ -123,12 +152,12 @@ struct ScoreBubbleView: View {
 }
 
 #Preview {
-        MyProgressView()
-            .environment({
-                let vm = PlantViewModel()
-                vm.plants = PlantViewModel.mockPlants
-                return vm
-            }())
+    MyProgressView()
+        .environment({
+            let vm = PlantViewModel()
+            vm.plants = PlantViewModel.mockPlants
+            return vm
+        }())
 }
 
 #Preview {

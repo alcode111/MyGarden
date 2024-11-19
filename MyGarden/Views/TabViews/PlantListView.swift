@@ -17,7 +17,9 @@ struct PlantListView: View {
                 Color.backgroundGreen
                 ScrollView{
                     ForEach(vm.plants){ plant in
-                        PlantCard(plant: plant, entry: plant.entries.last)
+                        NavigationLink(destination: DetailedPlantView(plant: plant, entry: plant.entries.last)) {
+                            PlantCard(plant: plant, entry: plant.entries.last)
+                        }
                     }
                 }
                 .padding(.horizontal,10)
@@ -26,7 +28,7 @@ struct PlantListView: View {
             }
             
         }
-      
+        
     }
 }
 
