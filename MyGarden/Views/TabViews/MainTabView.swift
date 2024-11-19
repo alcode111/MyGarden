@@ -20,7 +20,7 @@ struct MainTabView: View {
                 PlantListView()
             }
             
-            Tab("My Progress", systemImage: "chart.line.uptrend.xyaxis") {
+            Tab("My Progress", systemImage: "chart.xyaxis.line") {
                 MyProgressView()
             }
         }
